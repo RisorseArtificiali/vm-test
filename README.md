@@ -1,6 +1,6 @@
 # vm-test
 
-Disposable GUI virtual machines for testing [LINCE](https://lince.sh). Spin up a fresh Fedora or Ubuntu desktop in seconds, test whatever you need, destroy it, repeat.
+Disposable GUI virtual machines for testing software on a vanilla OS. Spin up a fresh Fedora or Ubuntu desktop in seconds, test whatever you need, destroy it, repeat.
 
 ## How it works
 
@@ -63,13 +63,15 @@ Default ISOs are provided for Fedora 43 and Ubuntu 24.04, but you can install an
 - `Fedora43-base`, `Fedora42-base`, `UbuntuNoble-base`, ...
 - Prepared images are named `<base>-<name>`: `Fedora43-devtools`, `Fedora43-minimal`, ...
 
-## Testing LINCE inside a VM
+## Example: testing LINCE
 
 Once the GNOME desktop is up, open a terminal and run:
 
 ```bash
 curl -sSL https://lince.sh/install | bash
 ```
+
+Any install script, provisioning tool, or dotfiles repo works the same way -- boot a disposable VM, run your stuff, destroy it.
 
 Default login: **tester** / **tester**
 

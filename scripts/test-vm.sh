@@ -1,6 +1,6 @@
 #!/usr/bin/env bash
 #
-# test-vm.sh — Disposable GUI VM launcher for LINCE testing
+# test-vm.sh — Disposable GUI VM launcher for testing on vanilla OS
 #
 # Manages layered VM images:
 #   Base:     Clean OS install        (e.g., Fedora43-base)
