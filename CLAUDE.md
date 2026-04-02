@@ -4,7 +4,7 @@ This file provides guidance to Claude Code (claude.ai/code) when working with co
 
 ## Project Overview
 
-**vm-test** is a Bash utility for creating disposable graphical VMs to test [LINCE](https://lince.sh) (a Linux provisioning tool). It uses libvirt/QEMU with a layered copy-on-write disk image system so VMs can be spun up instantly and destroyed without side effects.
+**vm-test** is a Bash utility for creating disposable graphical VMs to test software on a vanilla OS. It uses libvirt/QEMU with a layered copy-on-write disk image system for Linux VMs, and quickemu for macOS VMs. VMs can be spun up instantly and destroyed without side effects.
 
 ## Running
 
@@ -17,15 +17,21 @@ This file provides guidance to Claude Code (claude.ai/code) when working with co
 
 ## Prerequisites
 
-Requires `qemu-kvm`, `libvirt`, `virt-install`, `virt-viewer`, `genisoimage` and an active `libvirtd` service. The current user must be in the `libvirt` group. Bash 4+ required for associative arrays.
+Requires `qemu-kvm`, `libvirt`, `virt-install`, `virt-viewer`, `genisoimage` and an active `libvirtd` service. The current user must be in the `libvirt` group. Bash 4+ required for associative arrays. Optional: `quickemu` and `quickget` for macOS VM support.
 
 ## Architecture
 
-Single script: `scripts/test-vm.sh`. Three-layer image system:
+Single script: `scripts/test-vm.sh`. Two backends:
+
+### Linux VMs (libvirt) — Three-layer image system:
 
 1. **Base images** (`*-base.qcow2`) — Clean OS from ISO install. Multiple versions supported (e.g., `Fedora43-base`, `Ubuntu2404-base`). Default ISOs provided; custom URLs accepted.
-2. **Prepared images** (`*-<name>.qcow2`) — COW on top of a base with user customizations (e.g., `Fedora43-devtools`). Optional layer for pre-installing packages before testing lince.
+2. **Prepared images** (`*-<name>.qcow2`) — COW on top of a base with user customizations (e.g., `Fedora43-devtools`). Optional layer for pre-installing packages before testing.
 3. **Test overlays** (`lince-test-*.qcow2`) — Disposable COW of any base or prepared image. Destroyed after use.
+
+### macOS VMs (quickemu):
+
+Downloaded and managed via `quickget`/`quickemu`. Supports Sonoma, Sequoia, Ventura, Monterey. Stored in `~/.local/share/vm-test-macos/`.
 
 Key functions:
 - `install_base()` — Downloads ISO, runs interactive OS install via `virt-install`, saves as base qcow2

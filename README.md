@@ -1,8 +1,10 @@
 # vm-test
 
-Disposable GUI virtual machines for testing software on a vanilla OS. Spin up a fresh Fedora or Ubuntu desktop in seconds, test whatever you need, destroy it, repeat.
+Disposable GUI virtual machines for testing software on a vanilla OS. Spin up a fresh Fedora, Ubuntu, or macOS desktop, test whatever you need, destroy it, repeat.
 
 ## How it works
+
+### Linux VMs (libvirt)
 
 Three layers of disk images, each building on the previous:
 
@@ -16,12 +18,20 @@ Fedora43-base           ← clean OS install (one-time, ~15 min)
 2. **Prepared** — boot a base, install your packages/tools, shut down. Saved as a named image you can reuse.
 3. **Test VM** — instant copy-on-write overlay of any base or prepared image. Destroy it when done, back to the snapshot.
 
+### macOS VMs (quickemu)
+
+Downloaded and launched via [quickemu](https://github.com/quickemu-project/quickemu). Supports Sonoma, Sequoia, Ventura, and Monterey. First boot runs the macOS installer; subsequent boots go straight to the desktop.
+
 ## Prerequisites
 
 ```bash
+# Linux VMs
 sudo dnf install qemu-kvm libvirt virt-install virt-viewer genisoimage
 sudo systemctl enable --now libvirtd
 sudo usermod -aG libvirt $USER   # then re-login
+
+# macOS VMs (optional)
+sudo dnf install quickemu
 ```
 
 ## Usage
@@ -37,18 +47,23 @@ The TUI menu:
 
 ```
 ═══════════════════════════════════════════════════
-           LINCE Test VM Manager
+              Test VM Manager
 ═══════════════════════════════════════════════════
 
-  Images:
+  Linux Images:
     Fedora43-base              base  8.2G
     Fedora43-devtools          prep  1.3G
     Ubuntu2404-base            base  9.1G
 
-  s)  Start test VM
+  macOS VMs (quickemu):
+    macos-sonoma               stopped  64G
+
+  s)  Start test VM (Linux)
   n)  New OS install from ISO
   p)  Prepare image (customize a base)
   d)  Delete an image
+
+  m)  macOS VM (via quickemu)
 
   l)  List running VMs (0 active)
   x)  Destroy all test VMs
@@ -77,7 +92,7 @@ Default login: **tester** / **tester**
 
 ## Storage
 
-Everything lives in `~/.local/share/lince-test-vms/`:
+Linux images in `~/.local/share/lince-test-vms/`:
 
 | File | Size | Purpose |
 |------|------|---------|
@@ -85,6 +100,8 @@ Everything lives in `~/.local/share/lince-test-vms/`:
 | `*-base.qcow2` | 8–12 GB each | Clean OS installs |
 | `*-<name>.qcow2` | 1–5 GB each | Prepared images (delta from base) |
 | `lince-test-*.qcow2` | Few KB–MB | Disposable test overlays |
+
+macOS VMs in `~/.local/share/vm-test-macos/` (one directory per version, managed by quickemu).
 
 ## VM specs
 
